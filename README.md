@@ -1,6 +1,7 @@
 # Gradle SourceGen Plugin
 
 [![Build Status](https://travis-ci.org/Scalified/gradle-sourcegen-plugin.svg)](https://travis-ci.org/Scalified/gradle-sourcegen-plugin)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fcom%2Fscalified%2Fplugins%2Fgradle%2Fsourcegen%2Fcom.scalified.plugins.gradle.sourcegen.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/com.scalified.plugins.gradle.sourcegen)
 
 ## Description
 
@@ -8,7 +9,6 @@
 
 ## Requirements
 
-* [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Gradle 5+](https://gradle.org/)
 
 ## Changelog
@@ -46,8 +46,9 @@ apply plugin: "com.scalified.plugins.gradle.sourcegen"
 
 After applying the plugin, the following takes place:
 
-1. A directory, specified in **sourcegen.srcDir** property (**src/generated/java** by default) created (if missing):
+1. A directory, specified in the **sourcegen.location** property (**src/generated/java** by default) created (if missing)
 2. The created directory is marked as generated source root in IntelliJ IDEA
+3. The created directory is configured to be used as an output for annotation processor generated sources
 
 ## Configuration
 
@@ -55,7 +56,7 @@ Currently the following configuration parameters supported (default values are s
 
 ```gradle
 sourcegen {
-  srcDir = 'src/generated/java' // directory for generated source code
+    location = 'src/generated/java' // directory for generated source code
 }
 ```
 

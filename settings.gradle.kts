@@ -22,11 +22,6 @@
  * SOFTWARE.
  *
  */
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
 
 rootProject.name = "gradle-sourcegen-plugin"
 
