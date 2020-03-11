@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019 Scalified
+ * Copyright (c) 2020 Scalified
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,28 +22,19 @@
  * SOFTWARE.
  *
  */
-plugins {
-	kotlin("jvm") version "1.3.70"
 
-	id("com.gradle.plugin-publish") version "0.10.1"
-	`java-gradle-plugin`
-}
+package com.scalified.plugins.gradle.sourcegen
 
-pluginBundle {
-	website = "https://scalified.com/"
-	vcsUrl = "https://github.com/Scalified/gradle-sourcegen-plugin"
-	description = "Gradle SourceGen Plugin"
-	tags = listOf("source", "generated", "src")
-}
+import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.SourceSetContainer
 
-gradlePlugin {
-	plugins {
-		create("SourceGen Plugin") {
-			id = "com.scalified.plugins.gradle.sourcegen"
-			displayName = "Gradle SourceGen Plugin"
-			description = "A Plugin that configures directory for generated sources"
-			implementationClass = "com.scalified.plugins.gradle.sourcegen.SourceGenPlugin"
-			version = project.version
-		}
-	}
-}
+/**
+ * @author shell
+ * @since 2020-03-10
+ */
+internal val Project.sourceSets: SourceSetContainer
+	get() = (this as ExtensionAware).extensions.getByName("sourceSets") as SourceSetContainer
+
+internal fun Project.sourceSet(name: String): SourceSet = project.sourceSets.getByName(name) as SourceSet
