@@ -1,3 +1,7 @@
+# 1.1.0
+
+* [**#3** Include As Main SourceSet](https://github.com/Scalified/gradle-sourcegen-plugin/issues/3)
+
 # 1.0.0
 
 * [**#1** Kotlin Migration](https://github.com/Scalified/gradle-sourcegen-plugin/issues/1)

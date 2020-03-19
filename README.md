@@ -47,8 +47,8 @@ apply plugin: "com.scalified.plugins.gradle.sourcegen"
 After applying the plugin, the following takes place:
 
 1. A directory, specified in the **sourcegen.location** property (**src/generated/java** by default) created (if missing)
-2. The created directory is marked as generated source root in IntelliJ IDEA
-3. The created directory is configured to be used as an output for annotation processor generated sources
+2. The created directory is configured to be used as an output for annotation processor generated sources
+3. The created directory is configured for clean up during **clean** task
 
 ## Configuration
 

@@ -27,7 +27,6 @@ package com.scalified.plugins.gradle.sourcegen
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import org.slf4j.LoggerFactory
@@ -36,8 +35,6 @@ import org.slf4j.LoggerFactory
  * @author shell
  * @since 2020-03-10
  */
-private const val SOURCE_SET_NAME = "generated"
-
 private const val JAVA_COMPILE_TASK_NAME = "compileJava"
 
 private const val CLEAN_TASK_NAME = "clean"
@@ -55,24 +52,11 @@ open class SourceGenPlugin : Plugin<Project> {
 		logger.debug("Created $SOURCE_GEN_EXTENSION_NAME plugin extension")
 
 		project.afterEvaluate {
-			configureTasks(project, extension)
-			configureSourceSets(project, extension)
 			createDirectories(project, extension)
-			configureDirectories(project, extension)
 			configureDependencies(project)
+			configureTasks(project, extension)
+			configureDirectories(project, extension)
 		}
-	}
-
-	private fun configureSourceSets(project: Project, extension: SourceGenExtension) {
-		val mainSourceSet = project.sourceSet(SourceSet.MAIN_SOURCE_SET_NAME)
-		val generatedSourceSet = project.sourceSets.create(SOURCE_SET_NAME)
-		logger.debug("Created $SOURCE_SET_NAME source set")
-
-		val file = project.file(extension.location)
-		generatedSourceSet.java.srcDirs += file
-		generatedSourceSet.compileClasspath += (mainSourceSet.compileClasspath + mainSourceSet.output)
-		generatedSourceSet.runtimeClasspath += (mainSourceSet.runtimeClasspath + mainSourceSet.output)
-		logger.debug("Configured $SOURCE_SET_NAME source set")
 	}
 
 	private fun createDirectories(project: Project, extension: SourceGenExtension) {
@@ -80,6 +64,27 @@ open class SourceGenPlugin : Plugin<Project> {
 		if (!file.exists()) {
 			file.mkdirs()
 			logger.debug("Created ${file.absolutePath} directory")
+		}
+	}
+
+	private fun configureDependencies(project: Project) {
+		project.dependencies.add(ANNOTATION_PROCESSOR_CONFIGURATION, JAXB_API_DEPENDENCY)
+		logger.debug("Added $JAXB_API_DEPENDENCY to $ANNOTATION_PROCESSOR_CONFIGURATION configuration")
+	}
+
+	private fun configureTasks(project: Project, extension: SourceGenExtension) {
+		val file = project.file(extension.location)
+		val javaCompileTask = project.tasks.getByName(JAVA_COMPILE_TASK_NAME) as JavaCompile
+		javaCompileTask.options.annotationProcessorGeneratedSourcesDirectory = file
+		logger.debug("Configured JavaCompile task")
+
+		val cleanTask = project.tasks.getByName(CLEAN_TASK_NAME)
+		cleanTask.doFirst {
+			if (file.exists()) {
+				file.listFiles()?.forEach {
+					it.deleteRecursively()
+				}
+			}
 		}
 	}
 
@@ -91,27 +96,6 @@ open class SourceGenPlugin : Plugin<Project> {
 		val ideaModule = project.plugins.getPlugin(IdeaPlugin::class.java).model.module
 		ideaModule.generatedSourceDirs.add(project.file(extension.location))
 		logger.debug("Marked ${extension.location} as IDEA generated sources directory")
-	}
-
-	private fun configureDependencies(project: Project) {
-		project.dependencies.add(ANNOTATION_PROCESSOR_CONFIGURATION, JAXB_API_DEPENDENCY)
-		logger.debug("Added $JAXB_API_DEPENDENCY to $ANNOTATION_PROCESSOR_CONFIGURATION configuration")
-	}
-
-	private fun configureTasks(project: Project, extension: SourceGenExtension) {
-		val file = project.file(extension.location)
-		val javaCompileTask = project.tasks.getByName(JAVA_COMPILE_TASK_NAME) as JavaCompile
-		javaCompileTask.options.compilerArgs.addAll(listOf("-s", file.absolutePath))
-		logger.debug("Configured JavaCompile task")
-
-		val cleanTask = project.tasks.getByName(CLEAN_TASK_NAME)
-		cleanTask.doFirst {
-			if (file.exists()) {
-				file.listFiles()?.forEach {
-					it.deleteRecursively()
-				}
-			}
-		}
 	}
 
 }
