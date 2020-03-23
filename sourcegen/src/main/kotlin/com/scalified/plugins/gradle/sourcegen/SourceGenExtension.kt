@@ -33,6 +33,6 @@ internal const val SOURCE_GEN_EXTENSION_NAME = "sourcegen"
 
 open class SourceGenExtension {
 
-	var location = "src/generated/java"
+	var location = "src/main/generated"
 
 }
