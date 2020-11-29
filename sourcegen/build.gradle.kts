@@ -23,9 +23,9 @@
  *
  */
 plugins {
-	kotlin("jvm") version "1.3.70"
+	kotlin("jvm") version "1.4.20"
 
-	id("com.gradle.plugin-publish") version "0.10.1"
+	id("com.gradle.plugin-publish") version "0.12.0"
 	`java-gradle-plugin`
 }
 
@@ -46,4 +46,8 @@ gradlePlugin {
 			version = project.version
 		}
 	}
+}
+
+dependencies {
+	compileOnly(kotlin("gradle-plugin"))
 }

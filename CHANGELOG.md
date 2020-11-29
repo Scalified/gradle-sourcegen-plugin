@@ -1,3 +1,7 @@
+# 2.0.0
+
+* [**#5** Kotlin KAPT Support](https://github.com/Scalified/gradle-sourcegen-plugin/issues/5)
+
 # 1.2.0
 
 * [**#4** Change Default Location to 'src/main/generated](https://github.com/Scalified/gradle-sourcegen-plugin/issues/4)

@@ -29,6 +29,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.plugins.ide.idea.IdeaPlugin
+import org.jetbrains.kotlin.gradle.internal.KaptTask
 import org.slf4j.LoggerFactory
 
 /**
@@ -36,6 +37,10 @@ import org.slf4j.LoggerFactory
  * @since 2020-03-10
  */
 private const val JAVA_COMPILE_TASK_NAME = "compileJava"
+
+private const val KAPT_PLUGIN = "org.jetbrains.kotlin.kapt"
+
+private const val KAPT_TASK = "kaptKotlin"
 
 private const val CLEAN_TASK_NAME = "clean"
 
@@ -77,6 +82,11 @@ open class SourceGenPlugin : Plugin<Project> {
 		val javaCompileTask = project.tasks.getByName(JAVA_COMPILE_TASK_NAME) as JavaCompile
 		javaCompileTask.options.annotationProcessorGeneratedSourcesDirectory = file
 		logger.debug("Configured JavaCompile task")
+
+		if (project.plugins.hasPlugin(KAPT_PLUGIN)) {
+			val kaptTask = project.tasks.getByName(KAPT_TASK) as KaptTask
+			kaptTask.destinationDir = file
+		}
 
 		val cleanTask = project.tasks.getByName(CLEAN_TASK_NAME)
 		cleanTask.doFirst {
