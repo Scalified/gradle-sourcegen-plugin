@@ -1,3 +1,7 @@
+# 2.2.0
+
+* [**#6** Kotlin Generated Sources missing in SourceSet](https://github.com/Scalified/gradle-sourcegen-plugin/issues/6)
+
 # 2.0.0
 
 * [**#5** Kotlin KAPT Support](https://github.com/Scalified/gradle-sourcegen-plugin/issues/5)
