@@ -1,3 +1,7 @@
+# 2.3.0
+
+* [**#7** Unable to find method 'org.jetbrains.kotlin.gradle.internal.KaptTask.setDestinationDir](https://github.com/Scalified/gradle-sourcegen-plugin/issues/7)
+
 # 2.2.0
 
 * [**#6** Kotlin Generated Sources missing in SourceSet](https://github.com/Scalified/gradle-sourcegen-plugin/issues/6)

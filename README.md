@@ -1,6 +1,6 @@
 # Gradle SourceGen Plugin
 
-[![Build Status](https://travis-ci.org/Scalified/gradle-sourcegen-plugin.svg)](https://travis-ci.org/Scalified/gradle-sourcegen-plugin)
+[![Build Status](https://github.com/Scalified/gradle-sourcegen-plugin/actions/workflows/gradle.yml/badge.svg)](https://github.com/Scalified/gradle-sourcegen-plugin/actions)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fcom%2Fscalified%2Fplugins%2Fgradle%2Fsourcegen%2Fcom.scalified.plugins.gradle.sourcegen.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/com.scalified.plugins.gradle.sourcegen)
 
 ## Description
@@ -9,7 +9,7 @@
 
 ## Requirements
 
-* [Gradle 5+](https://gradle.org/)
+* [Gradle 7+](https://gradle.org/)
 
 ## Changelog
 

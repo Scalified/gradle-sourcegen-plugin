@@ -26,8 +26,8 @@ package com.scalified.plugins.gradle.sourcegen
 
 import org.gradle.api.Plugin
 import org.gradle.api.Task
-import org.gradle.api.plugins.Convention
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
@@ -46,8 +46,8 @@ internal val PluginContainer.kapt: Plugin<*>?
 internal val PluginContainer.idea: IdeaPlugin?
 	get() = findPlugin(IdeaPlugin::class.java)
 
-internal val Convention.java: JavaPluginConvention?
-	get() = findPlugin(JavaPluginConvention::class.java)
+internal val ExtensionContainer.java: JavaPluginExtension?
+	get() = findByType(JavaPluginExtension::class.java)
 
 internal val TaskContainer.clean: Task
 	get() = getByName("clean")

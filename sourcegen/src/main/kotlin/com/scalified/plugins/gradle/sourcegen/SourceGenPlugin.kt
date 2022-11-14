@@ -57,7 +57,7 @@ open class SourceGenPlugin : Plugin<Project> {
 
 	private fun configureDirectories(project: Project, extension: SourceGenExtension) {
 		val file = project.file(extension.location)
-		project.convention.java?.sourceSets?.main?.java?.srcDir(file)
+		project.extensions.java?.sourceSets?.main?.java?.srcDir(file)
 
 		if (!project.plugins.hasPlugin(IdeaPlugin::class.java)) {
 			project.plugins.apply(IdeaPlugin::class.java)
@@ -73,13 +73,13 @@ open class SourceGenPlugin : Plugin<Project> {
 
 		project.afterEvaluate {
 			val javaCompileTask = project.tasks.javaCompile
-			javaCompileTask.options.annotationProcessorGeneratedSourcesDirectory = file
+			javaCompileTask.options.generatedSourceOutputDirectory.set(file)
 			logger.debug("Configured JavaCompile task")
 
 			project.plugins.kapt?.let {
 				val kaptTask = project.tasks.kapt
-				kaptTask.destinationDir = file
-				kaptTask.kotlinSourcesDestinationDir = file
+				kaptTask.destinationDir.set(file)
+				kaptTask.kotlinSourcesDestinationDir.set(file)
 				logger.debug("Configured Kapt task")
 			}
 

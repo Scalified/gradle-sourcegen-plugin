@@ -23,16 +23,15 @@
  *
  */
 plugins {
-	kotlin("jvm") version "1.4.20"
+	kotlin("jvm") version "1.7.21"
 
-	id("com.gradle.plugin-publish") version "0.12.0"
-	`java-gradle-plugin`
+	id("com.gradle.plugin-publish") version "1.1.0"
 }
 
 pluginBundle {
 	website = "https://scalified.com/"
-	vcsUrl = "https://github.com/Scalified/gradle-sourcegen-plugin"
-	description = "Gradle SourceGen Plugin"
+	vcsUrl = "${project.properties["PROJECT_URL"]}"
+	description = "${project.properties["PROJECT_DESCRIPTION"]}"
 	tags = listOf("source", "generated", "src")
 }
 
@@ -40,8 +39,8 @@ gradlePlugin {
 	plugins {
 		create("SourceGen Plugin") {
 			id = "com.scalified.plugins.gradle.sourcegen"
-			displayName = "Gradle SourceGen Plugin"
-			description = "A Plugin that configures directory for generated sources"
+			displayName = "${project.properties["PROJECT_NAME"]}"
+			description = "${project.properties["PROJECT_DESCRIPTION"]}"
 			implementationClass = "com.scalified.plugins.gradle.sourcegen.SourceGenPlugin"
 			version = project.version
 		}
