@@ -23,30 +23,27 @@
  *
  */
 plugins {
-	kotlin("jvm") version "1.7.21"
+	`kotlin-dsl`
 
-	id("com.gradle.plugin-publish") version "1.1.0"
-}
-
-pluginBundle {
-	website = "https://scalified.com/"
-	vcsUrl = "${project.properties["PROJECT_URL"]}"
-	description = "${project.properties["PROJECT_DESCRIPTION"]}"
-	tags = listOf("source", "generated", "src")
+	alias(libs.plugins.gradle.publish)
 }
 
 gradlePlugin {
 	plugins {
+		@Suppress("UnstableApiUsage")
 		create("SourceGen Plugin") {
 			id = "com.scalified.plugins.gradle.sourcegen"
 			displayName = "${project.properties["PROJECT_NAME"]}"
 			description = "${project.properties["PROJECT_DESCRIPTION"]}"
 			implementationClass = "com.scalified.plugins.gradle.sourcegen.SourceGenPlugin"
 			version = project.version
+			website.set("https://scalified.com/")
+			vcsUrl.set("${project.properties["PROJECT_URL"]}")
+			tags.set(listOf("source", "generated", "src"))
 		}
 	}
 }
 
 dependencies {
-	compileOnly(kotlin("gradle-plugin"))
+	compileOnly(libs.kotlin.gradle)
 }

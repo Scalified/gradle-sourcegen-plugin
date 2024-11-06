@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019 Scalified
+ * Copyright (c) 2020 Scalified
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,16 @@
  *
  */
 
-allprojects {
+package com.scalified.plugins.gradle.sourcegen
 
-	group = "com.scalified"
-	version = "2.4.0"
+import org.gradle.api.provider.Property
 
-	repositories {
-		mavenCentral()
-	}
+/**
+ * @author shell
+ * @since 2020-03-10
+ */
+interface SourceGenPluginExtension {
+
+    val location: Property<String>
 
 }

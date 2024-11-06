@@ -17,29 +17,10 @@
 
 ## Applying
 
-Build script snippet for plugins DSL for Gradle 2.1 and later:
-
-```gradle
+```kotlin
 plugins {
-  id "com.scalified.plugins.gradle.sourcegen" version "<version>"
+    id "com.scalified.plugins.gradle.sourcegen" version "$VERSION"
 }
-```
-
-Build script snippet for use in older Gradle versions or where dynamic configuration is required:
-
-```gradle
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.com.scalified.plugins.gradle:sourcegen:<version>"
-  }
-}
-
-apply plugin: "com.scalified.plugins.gradle.sourcegen"
 ```
 
 ## Usage
@@ -50,15 +31,15 @@ After applying the plugin, the following takes place:
 2. The created directory is configured:
    * as an output for annotation processor generated sources
    * for clean up during **clean** task
-   * as marked generated sources root in IntelliJ IDEA (only if it is reside within **src/main**)
+   * as marked generated sources root in IntelliJ IDEA (only if it is resided within **src/main**)
 
 ## Configuration
 
-Currently the following configuration parameters supported (default values are shown):
+Currently, the following configuration parameters supported (default values are shown):
 
-```gradle
+```kotlin
 sourcegen {
-    location = 'src/main/generated' // directory for generated source code
+    location = "src/main/generated" // directory for the generated source code
 }
 ```
 

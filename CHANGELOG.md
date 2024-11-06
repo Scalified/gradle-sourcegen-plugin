@@ -1,3 +1,7 @@
+# 2.4.0
+
+* [**#8** Gradle Upgrade](https://github.com/Scalified/gradle-sourcegen-plugin/issues/8)
+
 # 2.3.0
 
 * [**#7** Unable to find method 'org.jetbrains.kotlin.gradle.internal.KaptTask.setDestinationDir](https://github.com/Scalified/gradle-sourcegen-plugin/issues/7)
