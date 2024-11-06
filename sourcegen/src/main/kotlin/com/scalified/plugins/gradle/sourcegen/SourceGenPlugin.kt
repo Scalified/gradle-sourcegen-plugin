@@ -27,6 +27,7 @@ package com.scalified.plugins.gradle.sourcegen
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import org.slf4j.LoggerFactory
 
@@ -36,59 +37,60 @@ import org.slf4j.LoggerFactory
  */
 open class SourceGenPlugin : Plugin<Project> {
 
-	private val logger = LoggerFactory.getLogger(SourceGenPlugin::class.java)
+    private val logger = LoggerFactory.getLogger(SourceGenPlugin::class.java)
 
-	override fun apply(project: Project) {
-		val extension = project.extensions.create(SOURCE_GEN_EXTENSION_NAME, SourceGenExtension::class.java)
-		logger.debug("Created $SOURCE_GEN_EXTENSION_NAME plugin extension")
+    override fun apply(project: Project) {
+        val extension = project.extensions.create<SourceGenPluginExtension>(SOURCE_GEN).apply {
+            logger.debug("'$SOURCE_GEN' extension created")
+            location.convention(LOCATION)
+            logger.debug("'{}' extension configured: {}", SOURCE_GEN, this)
+        }
+        project.afterEvaluate {
+            createDirectories(project, extension)
+            configureDirectories(project, extension)
+            configureTasks(project, extension)
+        }
+    }
 
-		createDirectories(project, extension)
-		configureDirectories(project, extension)
-		configureTasks(project, extension)
-	}
+    private fun createDirectories(project: Project, extension: SourceGenPluginExtension) {
+        val file = project.file(extension.location.get())
+        if (!file.exists()) {
+            file.mkdirs()
+            logger.debug("Created ${file.absolutePath} directory")
+        }
+    }
 
-	private fun createDirectories(project: Project, extension: SourceGenExtension) {
-		val file = project.file(extension.location)
-		if (!file.exists()) {
-			file.mkdirs()
-			logger.debug("Created ${file.absolutePath} directory")
-		}
-	}
+    private fun configureDirectories(project: Project, extension: SourceGenPluginExtension) {
+        val file = project.file(extension.location.get())
+        project.extensions.java?.sourceSets?.main?.java?.srcDir(file)
 
-	private fun configureDirectories(project: Project, extension: SourceGenExtension) {
-		val file = project.file(extension.location)
-		project.extensions.java?.sourceSets?.main?.java?.srcDir(file)
+        if (!project.plugins.hasPlugin(IdeaPlugin::class.java)) {
+            project.plugins.apply(IdeaPlugin::class.java)
+            logger.debug("Idea Plugin applied")
+        }
+        val ideaModule = project.plugins.idea?.model?.module
+        ideaModule?.generatedSourceDirs?.add(project.file(extension.location.get()))
+        logger.debug("Marked '{}' as IDEA generated sources directory", extension.location.get())
+    }
 
-		if (!project.plugins.hasPlugin(IdeaPlugin::class.java)) {
-			project.plugins.apply(IdeaPlugin::class.java)
-			logger.debug("Idea Plugin applied")
-		}
-		val ideaModule = project.plugins.idea?.model?.module
-		ideaModule?.generatedSourceDirs?.add(project.file(extension.location))
-		logger.debug("Marked ${extension.location} as IDEA generated sources directory")
-	}
+    private fun configureTasks(project: Project, extension: SourceGenPluginExtension) {
+        val file = project.file(extension.location.get())
+        val javaCompileTask = project.tasks.javaCompile
+        javaCompileTask.options.generatedSourceOutputDirectory.set(file)
+        logger.debug("Configured JavaCompile task")
 
-	private fun configureTasks(project: Project, extension: SourceGenExtension) {
-		val file = project.file(extension.location)
+        project.plugins.kapt?.let {
+            val kaptTask = project.tasks.kapt
+            kaptTask.destinationDir.set(file)
+            kaptTask.kotlinSourcesDestinationDir.set(file)
+            logger.debug("Configured Kapt task")
+        }
 
-		project.afterEvaluate {
-			val javaCompileTask = project.tasks.javaCompile
-			javaCompileTask.options.generatedSourceOutputDirectory.set(file)
-			logger.debug("Configured JavaCompile task")
-
-			project.plugins.kapt?.let {
-				val kaptTask = project.tasks.kapt
-				kaptTask.destinationDir.set(file)
-				kaptTask.kotlinSourcesDestinationDir.set(file)
-				logger.debug("Configured Kapt task")
-			}
-
-			project.tasks.clean.doFirst {
-				if (file.exists()) {
-					file.listFiles()?.forEach { it.deleteRecursively() }
-				}
-			}
-		}
-	}
+        project.tasks.clean.doFirst {
+            if (file.exists()) {
+                file.listFiles()?.forEach { it.deleteRecursively() }
+            }
+        }
+    }
 
 }

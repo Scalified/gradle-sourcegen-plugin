@@ -1,68 +1,45 @@
 # Gradle SourceGen Plugin
 
-[![Build Status](https://github.com/Scalified/gradle-sourcegen-plugin/actions/workflows/gradle.yml/badge.svg)](https://github.com/Scalified/gradle-sourcegen-plugin/actions)
+[![Build Status](https://github.com/Scalified/gradle-sourcegen-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/Scalified/gradle-sourcegen-plugin/actions)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fcom%2Fscalified%2Fplugins%2Fgradle%2Fsourcegen%2Fcom.scalified.plugins.gradle.sourcegen.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/com.scalified.plugins.gradle.sourcegen)
 
 ## Description
 
-[Gradle SourceGen Plugin](https://plugins.gradle.org/plugin/com.scalified.plugins.gradle.sourcegen) configures directory for generated sources
+[Gradle SourceGen Plugin](https://plugins.gradle.org/plugin/com.scalified.plugins.gradle.sourcegen) configures directory for the generated sources
 
 ## Requirements
 
-* [Gradle 7+](https://gradle.org/)
-
-## Changelog
-
-[Changelog](CHANGELOG.md)
+* [Gradle 8+](https://gradle.org/)
 
 ## Applying
 
-Build script snippet for plugins DSL for Gradle 2.1 and later:
-
-```gradle
+```kotlin
 plugins {
-  id "com.scalified.plugins.gradle.sourcegen" version "<version>"
+    id "com.scalified.plugins.gradle.sourcegen" version "$VERSION"
 }
-```
-
-Build script snippet for use in older Gradle versions or where dynamic configuration is required:
-
-```gradle
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.com.scalified.plugins.gradle:sourcegen:<version>"
-  }
-}
-
-apply plugin: "com.scalified.plugins.gradle.sourcegen"
 ```
 
 ## Usage
 
 After applying the plugin, the following takes place:
 
-1. A directory, specified in the **sourcegen.location** property (**src/main/generated** by default) created (if missing)
+1. A directory, specified in the `sourcegen.location` property (`src/main/generated` by default) created (if missing)
 2. The created directory is configured:
    * as an output for annotation processor generated sources
-   * for clean up during **clean** task
-   * as marked generated sources root in IntelliJ IDEA (only if it is reside within **src/main**)
+   * for clean up during `clean` task
+   * as marked generated sources root in IntelliJ IDEA (only if it is resided within `src/main`)
 
 ## Configuration
 
-Currently the following configuration parameters supported (default values are shown):
+Currently, the following configuration parameters are supported (default values are shown):
 
-```gradle
+```kotlin
 sourcegen {
-    location = 'src/main/generated' // directory for generated source code
+    location = "src/main/generated" // directory for the generated source code
 }
 ```
 
-If you need more configuration options, you may <a href="mailto:info@scalified.com?subject=[Gradle SourceGen Plugin]: Proposals And Suggestions">send a request</a> with description
+If you need more configuration options, you may <a href="mailto:info@scalified.com?subject=[Gradle SourceGen Plugin]: Proposals And Suggestions">send a request</a> with the description
 
 ## License
 
