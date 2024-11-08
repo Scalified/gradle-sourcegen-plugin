@@ -26,7 +26,7 @@
 allprojects {
 
 	group = "com.scalified"
-	version = "2.4.0"
+	version = rootProject.libs.versions.project.get()
 
 	repositories {
 		mavenCentral()
