@@ -27,9 +27,13 @@ package com.scalified.plugins.gradle.sourcegen
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import org.slf4j.LoggerFactory
+import java.io.File
 
 /**
  * @author shell
@@ -40,55 +44,43 @@ open class SourceGenPlugin : Plugin<Project> {
     private val logger = LoggerFactory.getLogger(SourceGenPlugin::class.java)
 
     override fun apply(project: Project) {
+        listOf(JavaPlugin::class, IdeaPlugin::class).filterNot(project.plugins::hasPlugin).forEach { type ->
+            project.plugins.apply(type)
+            logger.info("Applied '${type.simpleName}' plugin")
+        }
+
         val extension = project.extensions.create<SourceGenPluginExtension>(SOURCE_GEN).apply {
-            logger.debug("'$SOURCE_GEN' extension created")
+            logger.debug("Extension '$SOURCE_GEN' created")
             location.convention(LOCATION)
-            logger.debug("'{}' extension configured: {}", SOURCE_GEN, this)
+            logger.debug("Extension '{}' configured: {}", SOURCE_GEN, this)
         }
+
         project.afterEvaluate {
-            createDirectories(project, extension)
-            configureDirectories(project, extension)
-            configureTasks(project, extension)
-        }
-    }
+            val location = extension.location.get()
+            val locationFile = file(location)
 
-    private fun createDirectories(project: Project, extension: SourceGenPluginExtension) {
-        val file = project.file(extension.location.get())
-        if (!file.exists()) {
-            file.mkdirs()
-            logger.debug("Created ${file.absolutePath} directory")
-        }
-    }
+            createMissingDirectories(setOf(location))
 
-    private fun configureDirectories(project: Project, extension: SourceGenPluginExtension) {
-        val file = project.file(extension.location.get())
-        project.extensions.java?.sourceSets?.main?.java?.srcDir(file)
+            project.extensions.java.sourceSets.main.java.srcDir(locationFile)
+            logger.debug("Added '$location' generated sources as java sources")
 
-        if (!project.plugins.hasPlugin(IdeaPlugin::class.java)) {
-            project.plugins.apply(IdeaPlugin::class.java)
-            logger.debug("Idea Plugin applied")
-        }
-        val ideaModule = project.plugins.idea?.model?.module
-        ideaModule?.generatedSourceDirs?.add(project.file(extension.location.get()))
-        logger.debug("Marked '{}' as IDEA generated sources directory", extension.location.get())
-    }
+            project.plugins.idea.model.module.generatedSourceDirs.add(locationFile)
+            logger.debug("Marked '$location' as an IDEA generated sources directory")
 
-    private fun configureTasks(project: Project, extension: SourceGenPluginExtension) {
-        val file = project.file(extension.location.get())
-        val javaCompileTask = project.tasks.javaCompile
-        javaCompileTask.options.generatedSourceOutputDirectory.set(file)
-        logger.debug("Configured JavaCompile task")
+            tasks.javaCompile.get().options.generatedSourceOutputDirectory.set(locationFile)
+            logger.debug("Added '$location' generated sources as a java compile generated source output directory")
 
-        project.plugins.kapt?.let {
-            val kaptTask = project.tasks.kapt
-            kaptTask.destinationDir.set(file)
-            kaptTask.kotlinSourcesDestinationDir.set(file)
-            logger.debug("Configured Kapt task")
-        }
+            plugins.kaptOptional?.let { tasks.kapt.get() }?.apply {
+                destinationDir.set(locationFile)
+                kotlinSourcesDestinationDir.set(locationFile)
+                logger.debug("Added '$location' generated sources as kapt sources destination directory")
+            }
 
-        project.tasks.clean.doFirst {
-            if (file.exists()) {
-                file.listFiles()?.forEach { it.deleteRecursively() }
+            tasks.clean.get().doFirst {
+                if (locationFile.exists()) {
+                    locationFile.listFiles()?.forEach(File::deleteRecursively)
+                    logger.debug("Location '$location' cleaned")
+                }
             }
         }
     }

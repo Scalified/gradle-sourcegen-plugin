@@ -1,3 +1,7 @@
+# 2.6.0
+
+* [**#9** Refactoring](https://github.com/Scalified/gradle-sourcegen-plugin/issues/9)
+
 # 2.4.0
 
 * [**#8** Gradle Upgrade](https://github.com/Scalified/gradle-sourcegen-plugin/issues/8)

@@ -15,7 +15,7 @@
 
 ```kotlin
 plugins {
-    id "com.scalified.plugins.gradle.sourcegen" version "$VERSION"
+    id("com.scalified.plugins.gradle.sourcegen") version "$VERSION"
 }
 ```
 
@@ -23,8 +23,10 @@ plugins {
 
 After applying the plugin, the following takes place:
 
-1. A directory, specified in the `sourcegen.location` property (`src/main/generated` by default) created (if missing)
-2. The created directory is configured:
+1. JavaPlugin applied if not yet applied
+2. IdeaPlugin applied if not yet applied
+3. A directory, specified in the `sourcegen.location` property (`src/main/generated` by default) created (if missing)
+4. The created directory is configured:
    * as an output for annotation processor generated sources
    * for clean up during `clean` task
    * as marked generated sources root in IntelliJ IDEA (only if it is resided within `src/main`)

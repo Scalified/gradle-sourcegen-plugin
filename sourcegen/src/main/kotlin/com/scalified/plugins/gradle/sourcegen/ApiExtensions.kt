@@ -25,6 +25,7 @@
 package com.scalified.plugins.gradle.sourcegen
 
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.JavaPluginExtension
@@ -32,7 +33,11 @@ import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.getPlugin
+import org.gradle.kotlin.dsl.named
 import org.gradle.plugins.ide.idea.IdeaPlugin
 import org.jetbrains.kotlin.gradle.internal.KaptTask
 
@@ -40,23 +45,32 @@ import org.jetbrains.kotlin.gradle.internal.KaptTask
  * @author shell
  * @since 2020-12-05
  */
-internal val PluginContainer.kapt: Plugin<*>?
-	get() = findPlugin("org.jetbrains.kotlin.kapt")
+internal val PluginContainer.kaptOptional: Plugin<*>?
+    get() = findPlugin("org.jetbrains.kotlin.kapt")
 
-internal val PluginContainer.idea: IdeaPlugin?
-	get() = findPlugin(IdeaPlugin::class.java)
+internal val PluginContainer.idea: IdeaPlugin
+    get() = getPlugin(IdeaPlugin::class)
 
-internal val ExtensionContainer.java: JavaPluginExtension?
-	get() = findByType(JavaPluginExtension::class.java)
+internal val ExtensionContainer.java: JavaPluginExtension
+    get() = getByType<JavaPluginExtension>()
 
-internal val TaskContainer.clean: Task
-	get() = getByName("clean")
+internal val TaskContainer.clean: TaskProvider<Task>
+    get() = named("clean")
 
-internal val TaskContainer.javaCompile: JavaCompile
-	get() = getByName("compileJava") as JavaCompile
+internal val TaskContainer.javaCompile: TaskProvider<JavaCompile>
+    get() = named<JavaCompile>("compileJava")
 
-internal val TaskContainer.kapt: KaptTask
-	get() = getByName("kaptKotlin") as KaptTask
+internal val TaskContainer.kapt: TaskProvider<KaptTask>
+    get() = named<KaptTask>("kaptKotlin")
 
 internal val SourceSetContainer.main: SourceSet
-	get() = getByName("main")
+    get() = getByName("main")
+
+internal fun Project.createMissingDirectories(paths: Set<String>) {
+    paths.map(this::file).forEach { file ->
+        if (!file.exists()) {
+            file.mkdirs()
+            logger.debug("Created '${file.absolutePath}' directory")
+        }
+    }
+}
